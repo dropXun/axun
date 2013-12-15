@@ -9,4 +9,17 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-Axun::Application.config.secret_key_base = 'bba72446540889a23fc9c7fda7933e0b92fb602e1c21ca6ca68eb77a4dbb4ac41dc45d40fb08788a1215489baede40403706715bce67be36e9182d6b309a70f2'
+require 'securerandom'
+
+def secure_token
+  token_file = Rails.root.join('.secret')
+  if File.exist?(token_file)
+    File.read(token_file).chomp
+  else
+    token = SecureRandom.hex(64)
+    File.write(token_file,token)
+    token
+  end
+end
+
+Axun::Application.config.secret_key_base = secure_token
